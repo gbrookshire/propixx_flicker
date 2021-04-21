@@ -3,27 +3,25 @@ A minimal example of how to show flickering stimuli with the Propixx projector
 in the 1440-Hz mode.
 """
 
-import numpy as np
-from psychopy import visual, core, data, event, monitors
+from psychopy import visual, core, event
 
 # Flickering stims on the Propixx projector
-import sys; sys.path.append('..')
 import propixx_flicker as fl
 
 # Set use_propixx to False for testing on a normal monitor, or to True to run
 # this on a Propixx projector
-use_propixx = False 
+use_propixx = False
 
 # Initialize the Propixx projector
 fl.init(use_propixx=use_propixx)
 
-flicker_freqs = [3, 63] # Frequency of the flicker in Hz
-stim_duration = 5 # in seconds
-stim_size = 2 ** 7 # Size of the flickered stimulus in pixels
+flicker_freqs = [3, 63]  # Frequency of the flicker in Hz
+stim_duration = 5  # in seconds
+stim_size = 2 ** 7  # Size of the flickered stimulus in pixels
 
 
 ######################
-# Window and Stimuli #
+# Window and Stimuli  #
 ######################
 
 colors = {'grey': [0.0, 0.0, 0.0],
@@ -60,7 +58,7 @@ text_stim = fl.QuadStim(visual.TextStim,
 # everything flickers from white/black to neutral grey. They are used in the
 # same way, but there are differences in the implementation. These classes
 # automatically flicker the stimulus at the frequency specified, when in the
-# greyscale 1440 Hz mode on the Propixx projector. 
+# greyscale 1440 Hz mode on the Propixx projector.
 stim = fl.BrightnessFlickerStim(visual.ImageStim,
                                 image='example_stimulus.jpg',
                                 pos=frame_center,
@@ -71,7 +69,7 @@ stim = fl.BrightnessFlickerStim(visual.ImageStim,
 
 
 ####################
-# Show the stimuli #
+# Show the stimuli  #
 ####################
 
 instructs = ['This example shows a flickering image.',
@@ -92,7 +90,7 @@ def instructions(text):
     """
     show_text(text)
     event.waitKeys(keyList=['space'])
-    win.flip(clearBuffer=True) # clear the screen
+    win.flip(clearBuffer=True)  # clear the screen
     core.wait(0.2)
 
 
@@ -110,10 +108,10 @@ def main():
         show_text(f"{freq} Hz")
         core.wait(1.0)
         # Show the flickering stimulus
-        stim.flicker(freq) # Set the flicker frequency
+        stim.flicker(freq)  # Set the flicker frequency
         onset_time = core.monotonicClock.getTime()
         while core.monotonicClock.getTime() < onset_time + stim_duration:
-            stim.draw() # Automatically updates the stimuli for frequency-tagging
+            stim.draw()  # Automatically updates the stimuli for freq-tagging
             win.flip()
 
         # Show a blank screen
