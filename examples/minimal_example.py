@@ -1,18 +1,21 @@
-#!/usr/bin/env python
 """
 A minimal example of how to show flickering stimuli with the Propixx projector
 in the 1440-Hz mode.
 """
 
-IN_MEG_LAB = False # Change this to True to actually run in the MEG lab!
-
 import numpy as np
 from psychopy import visual, core, data, event, monitors
 
-import flicker as fl # Flickering stims on the Propixx projector
+# Flickering stims on the Propixx projector
+import sys; sys.path.append('..')
+import propixx_flicker as fl
+
+# Set use_propixx to False for testing on a normal monitor, or to True to run
+# this on a Propixx projector
+use_propixx = False 
 
 # Initialize the Propixx projector
-fl.init(use_propixx=IN_MEG_LAB)
+fl.init(use_propixx=use_propixx)
 
 flicker_freqs = [3, 63] # Frequency of the flicker in Hz
 stim_duration = 5 # in seconds
@@ -94,6 +97,8 @@ def instructions(text):
 
 
 def main():
+    """ Run the example experiment
+    """
 
     # Show the instructions
     for txt in instructs:
@@ -101,6 +106,10 @@ def main():
 
     # Show the flickering stimulus
     for freq in flicker_freqs:
+        # Show a label of how fast the stimuli will flicker
+        show_text(f"{freq} Hz")
+        core.wait(1.0)
+        # Show the flickering stimulus
         stim.flicker(freq) # Set the flicker frequency
         onset_time = core.monotonicClock.getTime()
         while core.monotonicClock.getTime() < onset_time + stim_duration:

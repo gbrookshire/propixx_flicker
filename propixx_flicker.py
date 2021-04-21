@@ -1,4 +1,3 @@
-
 """ Display flickering stimuli on a Propixx projector using Psychopy.
 
 The Propixx projector allows you to display 12 low-resolution gray-scale frames
@@ -23,21 +22,12 @@ import copy
 import numpy as np
 from psychopy import visual
 import pyglet.gl
-import mlab # Simple matlab calls
 
-
-_PROPIXX_ON = False # Set to True when the projector is ready for 1440 Hz
-FULL_RES = [1920, 1080] # Provided by Propixx
+FULL_RES = [1920, 1080] # Screen resolution provided by Propixx
 FRAME_RES = [e/2 for e in FULL_RES] # Each frame fills 1/4 of the whole screen
 FRAME_CENTER = [-FRAME_RES[0]/2, FRAME_RES[1]/2] # The center of the frame
+_PROPIXX_ON = False # Set to True when the projector is ready for 1440 Hz
 
-
-def _set_propixx_mode(vpixx_mode):
-    mlab_cmd = "Datapixx('Open'); \
-                Datapixx('SetPropixxDlpSequenceProgram', {}); \
-                Datapixx('RegWrRd'); \
-                exit;"
-    mlab.call(mlab_cmd.format(vpixx_mode))
 
 def init(use_propixx=True):
     """ Initialize the Propixx monitor to show stimuli at 1440
@@ -52,10 +42,12 @@ def init(use_propixx=True):
         OUTPUT_FRAME_RATE = 60 # Normal monitors refresh at 60 Hz
     print('Ready to display at {} Hz'.format(OUTPUT_FRAME_RATE))
 
+
 def close():
     """ Revert projector to normal display mode
     """
     _set_propixx_mode(0) # Revert to normal version
+
 
 class QuadStim(object):
     """ Class to show basic stimuli on a Propixx projector.
@@ -98,8 +90,15 @@ class QuadStim(object):
             for s in self.stimuli:
                 setattr(s, attr, value)
 
+
 class OpacityFlickerStim(QuadStim):
     """ Class to flicker the opacity of stimuli with a Propixx projector.
+
+    Arguments: Same as for QuadStim 
+
+    Set the frequency of the flicker with the `.flicker()` method. For the
+    flickering to work correctly, the stimulus needs to be re-drawn with the
+    `.draw()` method on every screen refresh.
     """
 
     def __init__(self, stim_class, **kwargs):
@@ -177,8 +176,15 @@ class OpacityFlickerStim(QuadStim):
         else:
             self.flickering = False
 
+
 class BrightnessFlickerStim(OpacityFlickerStim):
     """ Class to flicker the brightness of stimuli with a Propixx projector.
+
+    Arguments: Same as for QuadStim 
+
+    Set the frequency of the flicker with the `.flicker()` method. For the
+    flickering to work correctly, the stimulus needs to be re-drawn with the
+    `.draw()` method on every screen refresh.
     """
 
     def __init__(self, stim_class, **kwargs):
@@ -242,6 +248,7 @@ class BrightnessFlickerStim(OpacityFlickerStim):
         if self.masked:
             self.mask_stimuli.draw()
 
+
 def _inv_circle_mask(size):
     """ Return a circular boolean mask
     size: int
@@ -254,3 +261,27 @@ def _inv_circle_mask(size):
     circmask = ~circmask # Invert the mask
     circmask = circmask * 2 - 1 # Rescale to (-1)-1
     return circmask
+
+
+def _set_propixx_mode(vpixx_mode):
+    """
+    Set the mode of the VPixx projector
+    """
+    mlab_cmd = "Datapixx('Open'); \
+                Datapixx('SetPropixxDlpSequenceProgram', {}); \
+                Datapixx('RegWrRd'); \
+                exit;"
+    _call_matlab(mlab_cmd.format(vpixx_mode))
+
+
+def _call_matlab(matlab_cmd):
+    """ Invoke Matlab through the windows Command Prompt
+
+    No error handling, so this could break without telling you why if Matlab
+    changes. (Sorry, future users)
+
+    """
+    shell_cmd = 'matlab -nodisplay -nosplash -nodesktop -r "{}" '
+    cmd = shell_cmd.format(matlab_cmd)
+    status = subprocess.check_output(cmd, shell=True)
+    time.sleep(5) # Wait for everything to update
