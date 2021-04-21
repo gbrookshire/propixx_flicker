@@ -35,13 +35,13 @@ This high-frequency refresh rate helps to [measure cortical excitability using r
 
 This module provides three main classes.
 
-## `QuadStim`
+* `QuadStim`:
 Show a non-flickering stimulus on the Propixx projector. This takes a single Psychopy stimulus object and duplicates it across the four quadrants of the screen.
 
-## `OpacityFlickerStim`
+* `OpacityFlickerStim`: 
 Flicker a Psychopy stimulus object by modulating the opacity of the image.
 
-## `BrightnessFlickerStim`
+* `BrightnessFlickerStim`: 
 Flicker a Psychopy stimulus object by modulating the brightness of the image.
 
 
