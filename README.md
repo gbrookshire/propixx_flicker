@@ -1,7 +1,8 @@
 # propixx_flicker
 
 This module provides tools to show frequency-tagged stimuli in Psychopy using a Propixx projector.
-These tools make it easy to show stimuli that flicker at frequencies up to the 720 Hz.
+High-frequency flickering can allow you to [measure cortical excitability using rapid frequency tagging](https://doi.org/10.1016/j.neuroimage.2019.03.056).
+The `propixx_flicker` module makes it easy to show stimuli that flicker at frequencies up to the 720 Hz.
 
 
 # Background
@@ -27,8 +28,6 @@ for color_channel in (red, green, blue):
 ```
 
 The tools in `propixx_flicker` make it easy to show flickering stimuli on a Propixx projector without worrying about any of this.
-
-This high-frequency refresh rate helps to [measure cortical excitability using rapid frequency tagging](https://doi.org/10.1016/j.neuroimage.2019.03.056).
 
 
 # Classes
